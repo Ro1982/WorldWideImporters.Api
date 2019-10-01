@@ -1,13 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace WideWorldImporters.API.Models
 {
+#pragma warning disable CS1591
     public partial class StockItem
     {
         public StockItem()
@@ -17,9 +14,7 @@ namespace WideWorldImporters.API.Models
         public StockItem(int? stockItemID)
         {
             StockItemID = stockItemID;
-
         }
-
 
         public int? StockItemID { get; set; }
 
@@ -74,13 +69,14 @@ namespace WideWorldImporters.API.Models
     {
         public void Configure(EntityTypeBuilder<StockItem> builder)
         {
-            //Set configuration for entity
-            builder.ToTable("Stock Items", "Warehouse");
+            // Set configuration for entity
+            builder.ToTable("StockItems", "Warehouse");
 
-            //Set key for entity
+            // Set key for entity
             builder.HasKey(p => p.StockItemID);
 
-            //Set configuration for columns
+            // Set configuration for columns
+
             builder.Property(p => p.StockItemName).HasColumnType("nvarchar(200)").IsRequired();
             builder.Property(p => p.SupplierID).HasColumnType("int").IsRequired();
             builder.Property(p => p.ColorID).HasColumnType("int");
@@ -101,23 +97,27 @@ namespace WideWorldImporters.API.Models
             builder.Property(p => p.CustomFields).HasColumnType("nvarchar(max)");
             builder.Property(p => p.LastEditedBy).HasColumnType("int").IsRequired();
 
-            //Columns with default value
+            // Columns with default value
+
             builder
                 .Property(p => p.StockItemID)
                 .HasColumnType("int")
                 .IsRequired()
                 .HasDefaultValueSql("NEXT VALUE FOR [Sequences].[StockItemID]");
+
             // Computed columns
 
             builder
                 .Property(p => p.Tags)
                 .HasColumnType("nvarchar(max)")
                 .HasComputedColumnSql("json_query([CustomFields],N'$.Tags')");
+
             builder
-               .Property(p => p.SearchDetails)
-               .HasColumnType("nvarchar(max)")
-               .IsRequired()
-               .HasComputedColumnSql("concat([StockItemName],N' ',[MarketingComments])");
+                .Property(p => p.SearchDetails)
+                .HasColumnType("nvarchar(max)")
+                .IsRequired()
+                .HasComputedColumnSql("concat([StockItemName],N' ',[MarketingComments])");
+
             // Columns with generated value on add or update
 
             builder
@@ -132,12 +132,8 @@ namespace WideWorldImporters.API.Models
                 .IsRequired()
                 .ValueGeneratedOnAddOrUpdate();
         }
-
-        public void Configure(EntityTypeBuilder<StockItem> builder)
-        {
-            throw new NotImplementedException();
-        }
     }
+
     public class WideWorldImportersDbContext : DbContext
     {
         public WideWorldImportersDbContext(DbContextOptions<WideWorldImportersDbContext> options)
@@ -158,7 +154,4 @@ namespace WideWorldImporters.API.Models
         public DbSet<StockItem> StockItems { get; set; }
     }
 #pragma warning restore CS1591
-}
-}
-    }
 }
